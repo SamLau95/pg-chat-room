@@ -20,8 +20,7 @@ const LoginButton = React.createClass({
   _loginPopup() {
     this.props.fb.authWithOAuthPopup('google', (err, auth) => {
       if (err) {
-        AdminActions.setAuthError(`${err.toString()} | Send Sam your UID:
-          ${auth.uid} if you believe this is an error.`);
+        AdminActions.setAuthError(err, auth);
       } else {
         // We're listening to auth so the store will get the new value
       }

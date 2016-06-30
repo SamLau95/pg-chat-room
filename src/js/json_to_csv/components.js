@@ -68,7 +68,8 @@ class JSONToCSV extends React.Component {
   }
 
   render() {
-    const { studyList, displayOption, data, onSelectOption } = this.props;
+    const { studyList, displayOption, error, data,
+      onSelectOption } = this.props;
     let selectedOption;
 
     return (<div>
@@ -85,6 +86,8 @@ class JSONToCSV extends React.Component {
 
       <br />
 
+      {error}
+
       {data && <DataDisplay
         onSelectOption={onSelectOption}
         displayOption={displayOption}
@@ -99,6 +102,7 @@ JSONToCSV.propTypes = {
   studyList: PropTypes.array.isRequired,
   study: PropTypes.string.isRequired,
   displayOption: PropTypes.string.isRequired,
+  error: PropTypes.string,
   data: dataShape,
 
   // Callbacks

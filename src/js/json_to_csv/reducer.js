@@ -38,6 +38,7 @@ const defaultState = {
   fetchingStudyList: true,
   displayOption: 'USERS',
   fetchingData: false,
+  error: null,
   data: null,
 };
 
@@ -53,10 +54,24 @@ const jsonCsvApp = handleActions({
   SET_DISPLAY_OPTION: (state, action) =>
     ({ ...state, displayOption: action.payload }),
 
-  START_DATA_FETCH: (state, action) => ({ ...state, fetchingData: true }),
+  START_DATA_FETCH: (state, action) => ({
+    ...state,
+    error: null,
+    fetchingData: true,
+  }),
 
-  SET_DATA: (state, action) =>
-    ({ ...state, fetchingData: false, data: action.payload }),
+  SET_DATA: (state, action) => ({
+    ...state,
+    fetchingData: false,
+    error: null,
+    data: action.payload,
+  }),
+
+  SET_ERROR: (state, action) => ({
+    ...state,
+    error: action.payload,
+    data: null,
+  }),
 
 }, defaultState);
 

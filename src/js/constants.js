@@ -18,6 +18,11 @@ const MESSAGE_TYPES = {
   confederate: 'Confederate',
 };
 
+function permissionDeniedMessage(err, auth) {
+  return `${err.toString()} | Send Sam your UID:
+    ${auth.uid} if you believe this is an error.`;
+}
+
 export default {
   ROOT_URL,
   STUDIES_URL,
@@ -25,6 +30,7 @@ export default {
   USER_AUTH_URL,
   DEFAULT_ROOM_VALUES,
   MESSAGE_TYPES,
+  permissionDeniedMessage,
 };
 
 
