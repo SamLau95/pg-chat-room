@@ -40,7 +40,7 @@ const LoginButton = React.createClass({
         </div>
         :
         <div className="button" onClick={this._loginPopup}>
-          Log in through Google.
+          Log in through Google
         </div>
       }
 

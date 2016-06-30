@@ -36,7 +36,6 @@ const StudyList = React.createClass({
   },
 
   _handleSelectStudy(study) {
-    console.log(study);
     AdminActions.setSelectedStudy(study);
   },
 

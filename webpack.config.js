@@ -3,7 +3,6 @@ var webpack = require("webpack");
 module.exports = {
     entry: {
         chat: ["./src/js/chat.js"],
-        json_to_csv: ["./src/js/json_to_csv.js"],
         admin: ["./src/js/admin.js"],
     },
     resolve: {
