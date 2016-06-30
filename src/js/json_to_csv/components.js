@@ -27,7 +27,7 @@ const dataShape = PropTypes.objectOf(PropTypes.shape({
   ]).isRequired,
 }));
 
-const DataDisplay = ({ displayOption, data }) => {
+const DataDisplay = ({ onSelectOption, displayOption, data }) => {
   let csv;
   if (displayOption === USERS) {
     csv = extractUserData(data);
@@ -37,31 +37,45 @@ const DataDisplay = ({ displayOption, data }) => {
     csv = NO_DATA_MSG;
   }
 
-  return <pre>{csv}</pre>;
+  return (<div>
+    <form>
+      <input type="radio" value={USERS}
+        id="users"
+        checked={displayOption === USERS}
+        onChange={onSelectOption} />
+      <label style={{display: 'inline'}} htmlFor="users">Users</label>
+      <input type="radio" value={MESSAGES}
+        id="messages"
+        checked={displayOption === MESSAGES}
+        onChange={onSelectOption} />
+      <label style={{display: 'inline'}} htmlFor="messages">Messages</label>
+    </form>
+
+    <pre>{csv}</pre>;
+  </div>);
 };
 
 DataDisplay.propTypes = {
+  onSelectOption: PropTypes.func.isRequired,
+
   displayOption: PropTypes.string.isRequired,
   data: dataShape.isRequired,
 };
 
 class JSONToCSV extends React.Component {
   componentDidMount() {
-    this.props.dispatch(fetchStudyList());
+    this.props.onMount();
   }
 
   render() {
-    const { studyList, displayOption, data, dispatch } = this.props;
-    let studySelect;
+    const { studyList, displayOption, data, onSelectOption } = this.props;
+    let selectedOption;
 
     return (<div>
       <h1>Get Data from Study</h1>
 
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        dispatch(setStudyAndStartFetch(studySelect.value));
-      }}>
-        <select ref={node => studySelect = node}>
+      <form onSubmit={(e) => this.props.onSelectStudy(e, selectedOption)}>
+        <select ref={node => selectedOption = node}>
           {_.map(studyList,
             (s) => <option value={s} key={s}>{s}</option>)}
         </select>
@@ -70,32 +84,37 @@ class JSONToCSV extends React.Component {
       </form>
 
       <br />
-      {data && <form>
-        <input type="radio" value={USERS}
-          id="users"
-          checked={displayOption === USERS}
-          onChange={(e) => dispatch(setDisplayOption(e.target.value))} />
-        <label style={{display: 'inline'}} htmlFor="users">Users</label>
-        <input type="radio" value={MESSAGES}
-          id="messages"
-          checked={displayOption === MESSAGES}
-          onChange={(e) => dispatch(setDisplayOption(e.target.value))} />
-        <label style={{display: 'inline'}} htmlFor="messages">Messages</label>
-      </form>}
 
-      {data && <DataDisplay displayOption={displayOption} data={data} />}
+      {data && <DataDisplay
+        onSelectOption={onSelectOption}
+        displayOption={displayOption}
+        data={data}
+      />}
     </div>);
   }
 }
 
 JSONToCSV.propTypes = {
+  // Data
   studyList: PropTypes.array.isRequired,
   study: PropTypes.string.isRequired,
   displayOption: PropTypes.string.isRequired,
   data: dataShape,
-  dispatch: PropTypes.func.isRequired,
+
+  // Callbacks
+  onMount: PropTypes.func.isRequired,
+  onSelectStudy: PropTypes.func.isRequired,
+  onSelectOption: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => state;
+const mapDispatchToProps = (dispatch) => ({
+  onMount: () => dispatch(fetchStudyList()),
+  onSelectStudy: (e, selectedOption) => {
+    e.preventDefault();
+    dispatch(setStudyAndStartFetch(selectedOption.value));
+  },
+  onSelectOption: (e) => dispatch(setDisplayOption(e.target.value)),
+});
 
-export default connect(mapStateToProps)(JSONToCSV);
+export default connect(mapStateToProps, mapDispatchToProps)(JSONToCSV);
